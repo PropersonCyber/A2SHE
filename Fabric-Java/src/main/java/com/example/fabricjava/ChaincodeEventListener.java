@@ -1,7 +1,5 @@
-package org.example;
+package com.example.fabricjava;
 
-import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.hyperledger.fabric.client.ChaincodeEvent;
@@ -13,11 +11,10 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * @author Administrator
- * @date2023/6/9 0009 11:16
+ * @date2023/6/19 0019 10:19
  */
 @Slf4j
-@Log
-public class ChaincodeEventListener {
+public class ChaincodeEventListener implements Runnable {
     final Network network;
 
     public ChaincodeEventListener(Network network) {
@@ -33,21 +30,22 @@ public class ChaincodeEventListener {
             }
         });
 
-        executor.execute((Runnable) this);
+        executor.execute( this);
     }
 
-
+    @Override
     public void run() {
-        CloseableIterator<ChaincodeEvent> events = network.getChaincodeEvents("Fabric-Contract-Java");
-        log.info("chaincodeEvents  " + events);
+        CloseableIterator<ChaincodeEvent> events = network.getChaincodeEvents("Fabric-Java");
+        log.info("chaincodeEvents {} " , events);
+
 
         // events.hasNext() 会阻塞等待
         while (events.hasNext()) {
             ChaincodeEvent event = events.next();
-            log.info("receive chaincode event {} "+event.getEventName() +" , transaction id {}"+event.getTransactionId()+" ,  block number {}"+event.getBlockNumber() +" , payload {} "+
-                      StringUtils.newStringUtf8(event.getPayload()));
+
+            log.info("receive chaincode event {} , transaction id {} ,  block number {} , payload {} "
+                    , event.getEventName() , event.getTransactionId() , event.getBlockNumber() , StringUtils.newStringUtf8(event.getPayload()));
 
         }
     }
-
 }

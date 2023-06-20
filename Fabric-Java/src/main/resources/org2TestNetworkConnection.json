@@ -67,7 +67,7 @@
   },
   "orderers": {
     "orderer.example.com": {
-      "url": "grpcs://192.168.1.66:7050",
+      "url": "grpcs://192.168.0.104:7050",
       "mspid": "OrdererMSP",
       "grpcOptions": {
         "ssl-target-name-override": "orderer.example.com",
@@ -86,7 +86,7 @@
   },
   "peers": {
     "peer0.org1.example.com": {
-      "url": "grpcs://192.168.1.66:7051",
+      "url": "grpcs://192.168.0.104:7051",
       "grpcOptions": {
         "ssl-target-name-override": "peer0.org1.example.com",
         "hostnameOverride": "peer0.org1.example.com",
@@ -97,7 +97,7 @@
       }
     },
     "peer0.org2.example.com": {
-      "url": "grpcs://192.168.1.66:9051",
+      "url": "grpcs://192.168.0.104:9051",
       "grpcOptions": {
         "ssl-target-name-override": "peer0.org2.example.com",
         "hostnameOverride": "peer0.org2.example.com",
@@ -110,7 +110,7 @@
   },
   "certificateAuthorities": {
     "ca-org1": {
-      "url": "https://192.168.1.66:7054",
+      "url": "https://192.168.0.104:7054",
       "grpcOptions": {
         "verify": true
       },
@@ -125,7 +125,7 @@
       ]
     },
     "ca-org2": {
-      "url": "https://192.168.1.66:8054",
+      "url": "https://192.168.0.104:8054",
       "grpcOptions": {
         "verify": true
       },

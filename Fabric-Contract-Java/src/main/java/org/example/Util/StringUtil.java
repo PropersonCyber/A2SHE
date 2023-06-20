@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Util;
 
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
@@ -9,7 +9,7 @@ import java.util.Base64;
  * @author Administrator
  * @date2023/6/14 0014 10:51
  */
-public class Util {
+public class StringUtil {
     //将输入的String中的每个元素转变成Element中映射到Zr上的点元素
     public static Element StringToElement(Pairing pairing, String str) {
         byte[] att = str.getBytes();
