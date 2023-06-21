@@ -54,6 +54,8 @@ public class VerifyContractController {
     public Map<String,Object> Verify(@RequestBody VerifyInfo verifyInfo) throws  Exception{
         Map<String,Object> result=Maps.newConcurrentMap();
 
+        //查看执行时间
+        long startTime=System.currentTimeMillis();
         byte[] bytes = contract.submitTransaction("Verify", verifyInfo.getCredAggRandom(),
                 verifyInfo.getPhi_1(),
                 verifyInfo.getPhi_2(),
@@ -64,10 +66,12 @@ public class VerifyContractController {
                 verifyInfo.getS_o(),
                 verifyInfo.getS_beta(),
                 verifyInfo.getS_gamma(),
-                verifyInfo.getHash_C(),
+                verifyInfo.getC(),
                 verifyInfo.getAttributes(),
                 verifyInfo.getMsg());
-
+        long endTime=System.currentTimeMillis();
+        long elapsedTime=endTime-startTime;
+        System.out.println("Verify 执行时间："+elapsedTime+"ms");
         result.put("payload", StringUtils.newStringUtf8(bytes));
         result.put("status", "ok");
         return result;

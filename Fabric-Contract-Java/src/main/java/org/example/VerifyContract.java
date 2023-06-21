@@ -77,20 +77,20 @@ public class VerifyContract implements ContractInterface {
 
     //验证通过之后，在区块链上创建一条数据
     @Transaction
-    public VerifyInfo createVerifyInfo(final Context ctx, VerifyInfo verifyInfo) {
-//        ChaincodeStub stub = ctx.getStub();
-//        String verifyInfoState = stub.getStringState(verifyInfo.Phi_1);
-//
-//        if (StringUtils.isNotBlank(verifyInfoState)) {
-//            String errorMessage = String.format("VerifyInfo Phi_1 %s already exists", verifyInfo.Phi_1);
-//            System.out.println(errorMessage);
-//            throw new ChaincodeException(errorMessage);
-//        }
-//
-//        String json = JSON.toJSONString(verifyInfo);
-//        stub.putStringState(verifyInfo.Phi_1, json);
-//        stub.setEvent("createVerifyInfoEvent", org.apache.commons.codec.binary.StringUtils.getBytesUtf8(json));
-        return verifyInfo;
+    public VerifyInfoVo AddVerifyInfo(final Context ctx, VerifyInfoVo verifyInfoVo) {
+        ChaincodeStub stub = ctx.getStub();
+        String verifyInfoState = stub.getStringState(verifyInfoVo.getPhi_1());
+
+        if (StringUtils.isNotBlank(verifyInfoState)) {
+            String errorMessage = String.format("VerifyInfo Phi_1 %s already exists", verifyInfoVo.getPhi_1());
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage);
+        }
+
+        String json = JSON.toJSONString(verifyInfoVo);
+        stub.putStringState(verifyInfoVo.getPhi_1(), json);
+        stub.setEvent("createVerifyInfoEvent", org.apache.commons.codec.binary.StringUtils.getBytesUtf8(json));
+        return verifyInfoVo;
     }
 
     //验证用户出示的凭证，通过验证之后将认证信息上传到区块链中
@@ -103,8 +103,9 @@ public class VerifyContract implements ContractInterface {
          *对用户出示的凭证证明信息进行验证，验证通过之后将信息上传（即在区块上创建信息）
          */
         if (Verify(verifyInfo)) {
-            createVerifyInfo(ctx, verifyInfo);
-            return true;
+            VerifyInfoVo res=AddVerifyInfo(ctx, VerifyInfo.toVo(verifyInfo));
+            if (res.getPhi_1()!=null)
+                return true;
         }
 
         return false;

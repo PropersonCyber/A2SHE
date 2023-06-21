@@ -31,11 +31,12 @@ public class VerifyInfo {
 
     String S_gamma;
 
-    String Hash_C;
+    String C;
 
-    String Attributes;
+    String attributes;
 
-    //用户进出公共场所的消息
+    String ivk;
+
     String msg;
 
 }
