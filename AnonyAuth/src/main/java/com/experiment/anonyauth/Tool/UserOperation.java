@@ -12,21 +12,19 @@ import it.unisa.dia.gas.jpbc.Pairing;
  * @date2023/6/26 0026 16:10
  */
 public class UserOperation {
-    public static UserProof createUserProof(Element ivk){
-        Element g1 = PublicParam.g1;
-        Element g2 = PublicParam.g2;
+    public static UserProof createUserProof(Element[] vk){
 
         Element uvk = UserParam.uvk;
         Element usk = UserParam.usk;
 
-        Element f = PublicParam.Zr.newRandomElement().getImmutable();
-        Element R = g1.duplicate().powZn(f).getImmutable();
-        Element hashedR = ElementOperation.Hash(ivk, uvk, R);
-        Element Sb = f.add(hashedR.duplicate().mul(usk)).getImmutable();
+        Element theta = PublicParam.Zr.newRandomElement().getImmutable();
+        Element A = PublicParam.g1.duplicate().powZn(theta).getImmutable();
+        Element hashedR = ElementOperation.Hash(vk[0], uvk, A);
+        Element S_theta = theta.add(hashedR.duplicate().mul(usk)).getImmutable();
 
         UserProof userProof = new UserProof();
         userProof.setUvk(uvk);
-        userProof.setSb(Sb);
+        userProof.setS_theta(S_theta);
         userProof.setHashedR(hashedR);
         return userProof;
     }
@@ -98,7 +96,6 @@ public class UserOperation {
         String[][] attr=credential.getAttributes();
 
         //引入参数
-        Pairing pairing = PublicParam.pairing;
         Field Zr = PublicParam.Zr;
         Element g1 = PublicParam.g1;
         Element g_1=PublicParam.g_1;
@@ -110,43 +107,41 @@ public class UserOperation {
         Element usk = UserParam.usk;
         Element alpha_l=UserParam.alpha_l;
         Element nodeValue =UserParam.nodeValue;
-        Element Rv=UserParam.Rv;
         Element epoch_t = ElementOperation.StringConvertZrElement(PublicParam.epoch).getImmutable();
 
-
-        Element rtvk = RAParam.rtvk;
+        Element tpk = RAParam.tpk;
         Element[] rvk = RAParam.rvk;
 
 
         //预计算值
         //e(g_2,g2 )
-        Element E_g_2_g2 = pairing.pairing(g_2, g2).getImmutable();
+        Element E_g_2_g2 = PublicParam.pairing.pairing(g_2, g2).getImmutable();
         //e(tpk,vk_3)
-        Element E_tpk_vk3 = pairing.pairing(rtvk, rvk[2]).getImmutable();
+        Element E_tpk_vk3 = PublicParam.pairing.pairing(tpk, rvk[2]).getImmutable();
         //e(g1,g2)
-        Element E_g1_g2=pairing.pairing(g1, g2).getImmutable();
+        Element E_g1_g2=PublicParam.pairing.pairing(g1, g2).getImmutable();
         //e(tpk,g2)
-        Element E_tpk_g2=pairing.pairing(rtvk, g2).getImmutable();
+        Element E_tpk_g2=PublicParam.pairing.pairing(tpk, g2).getImmutable();
         //e(g_1,g2)
-        Element E_g_1_g2=pairing.pairing(g_1, g2).getImmutable();
+        Element E_g_1_g2=PublicParam.pairing.pairing(g_1, g2).getImmutable();
         //H(vk1,vk2,vk3,t)拼接的字符串
         //将hash值映射到G1群上
-        Element H_vk_t=ElementOperation.HashToG1(rvk[0],rvk[1],rvk[2],epoch_t);
+        Element H_vk_t=ElementOperation.HashToG1(rvk[0],epoch_t);
         //e(H(vk,t),vk1)
-        Element E_H_vk1=pairing.pairing(H_vk_t,rvk[0]).getImmutable();
+        Element E_H_vk1=PublicParam.pairing.pairing(H_vk_t,rvk[0]).getImmutable();
         //e(H(vk,t),vk2)
-        Element E_H_vk2=pairing.pairing(H_vk_t,rvk[1]).getImmutable();
+        Element E_H_vk2=PublicParam.pairing.pairing(H_vk_t,rvk[1]).getImmutable();
         //e(H(vk,t),vk3)
-        Element E_H_vk3=pairing.pairing(H_vk_t,rvk[2]).getImmutable();
+        Element E_H_vk3=PublicParam.pairing.pairing(H_vk_t,rvk[2]).getImmutable();
         //e(H(vk,t),g2)
-        Element E_H_g2=pairing.pairing(H_vk_t, g2).getImmutable();
+        Element E_H_g2=PublicParam.pairing.pairing(H_vk_t, g2).getImmutable();
         //e(H(vk,t),vk1)*e(H(vk,t),vk3)^t
-        Element E_H_vk13=pairing.pairing(H_vk_t,rvk[0].duplicate().mul(rvk[2].duplicate().powZn(epoch_t))).getImmutable();
+        Element E_H_vk13=PublicParam.pairing.pairing(H_vk_t,rvk[0].duplicate().mul(rvk[2].duplicate().powZn(epoch_t))).getImmutable();
 
         //计算参数
         Element gamma_1 = Zr.newRandomElement().getImmutable();
         Element gamma_2= Zr.newRandomElement().getImmutable();
-        Element phi_1 = tToken.duplicate().mul(rtvk.duplicate().powZn(gamma_1)).getImmutable();
+        Element phi_1 = tToken.duplicate().mul(tpk.duplicate().powZn(gamma_1)).getImmutable();
         Element phi_2 = rToken.duplicate().mul(H_vk_t.duplicate().powZn(gamma_2)).getImmutable();
         Element phi_3 = g1.duplicate().powZn(gamma_1).getImmutable();
         Element beta = gamma_1.duplicate().mul(alpha_l).getImmutable();
@@ -192,10 +187,10 @@ public class UserOperation {
 
         Element leftElement = phi_3.duplicate().powZn(r_u).getImmutable();
 
-        Element D1 = pairing.pairing(leftElement, rigg);
+        Element D1 = PublicParam.pairing.pairing(leftElement, rigg);
 
         //计算D2
-        Element D2_r1 = pairing.pairing(phi_1.duplicate().powZn(r_alpha.duplicate().negate()), g2).getImmutable();
+        Element D2_r1 = PublicParam.pairing.pairing(phi_1.duplicate().powZn(r_alpha.duplicate().negate()), g2).getImmutable();
         Element D2_r2 = E_g_2_g2.duplicate().powZn(r_n).getImmutable();
         Element D2_r3 = E_g1_g2.duplicate().powZn(r_u).getImmutable();
         Element D2_r4 = E_tpk_vk3.duplicate().powZn(r_o).getImmutable();

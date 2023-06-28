@@ -12,17 +12,30 @@ import lombok.Data;
 public class UserProof {
     private Element uvk;
     private Element HashedR;
-    private Element Sb;
+    private Element S_theta;
+    private Element A;
 
-    public static UserProof fromVo(UserProofVo userProofVo){
-        UserProof userProof = new UserProof();
-        ElementStringConverter.stringToElement(userProofVo, userProof);
-        return userProof;
+    public Element getS_theta() {
+        return S_theta;
     }
 
-    public static UserProofVo toVo(UserProof UserProof){
-        UserProofVo UserProofVo = new UserProofVo();
-        ElementStringConverter.elementToString(UserProof,UserProofVo);
-        return UserProofVo;
+    public Element getUvk() {
+        return uvk;
+    }
+
+    public Element getHashedR() {
+        return HashedR;
+    }
+
+    public void setS_theta(Element s_theta) {
+        S_theta = s_theta;
+    }
+
+    public void setHashedR(Element hashedR) {
+        HashedR = hashedR;
+    }
+
+    public void setUvk(Element uvk) {
+        this.uvk = uvk;
     }
 }

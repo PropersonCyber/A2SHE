@@ -14,4 +14,20 @@ public class UserInfoVo {
     private String rv;
     private String fr;
     private String tToken;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFr() {
+        return fr;
+    }
+
+    public void setFr(String fr) {
+        this.fr = fr;
+    }
 }

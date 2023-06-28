@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
  * @date2023/6/26 0026 15:46
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class VerifyInfo {
     private Element phi_1;
     private Element phi_2;
@@ -30,35 +30,84 @@ public class VerifyInfo {
     private Element[][] ivk;
     private String msg;
 
-    public static VerifyInfo fromVo(VerifyInfoVo verifyInfoVo){
-        VerifyInfo verifyInfo = new VerifyInfo();
-        verifyInfo.setAttributes(verifyInfoVo.getAttributes());
-        verifyInfo.setMsg(verifyInfoVo.getMsg());
-        String[][] ivkStr = verifyInfoVo.getIvk();
-        Element[][] ivkList= new Element[ivkStr.length][];
-        for(int i=0;i<ivkList.length;i++){
-            ivkList[i]=new Element[ivkStr[i].length];
-            for(int j=0;j<ivkList[i].length;j++)
-                ivkList[i][j]= ElementOperation.getElementFromString(ivkStr[i][j]);
-        }
-        verifyInfo.setIvk(ivkList);
-        ElementStringConverter.stringToElement(verifyInfoVo, verifyInfo);
-        return verifyInfo;
+    public Element getPhi_1() {
+        return phi_1;
     }
 
-    public static VerifyInfoVo toVo(VerifyInfo verifyInfo){
-        VerifyInfoVo verifyInfoVo = new VerifyInfoVo();
-        verifyInfoVo.setMsg(verifyInfo.msg);
-        verifyInfoVo.setAttributes(verifyInfo.getAttributes());
-        Element[][] ivkList = verifyInfo.getIvk();
-        String[][] ivkStr= new String[ivkList.length][];
-        for(int i=0;i<ivkStr.length;i++){
-            ivkStr[i]=new String[ivkList[i].length];
-            for(int j=0;j<ivkStr[i].length;j++)
-                ivkStr[i][j]=ElementOperation.getElementString(ivkList[i][j]);
-        }
-        verifyInfoVo.setIvk(ivkStr);
-        ElementStringConverter.elementToString(verifyInfo, verifyInfoVo);
-        return verifyInfoVo;
+    public void setPhi_1(Element phi_1) {
+        this.phi_1 = phi_1;
+    }
+
+    public Element getPhi_2() {
+        return phi_2;
+    }
+
+    public void setPhi_2(Element phi_2) {
+        this.phi_2 = phi_2;
+    }
+
+    public Element getPhi_3() {
+        return phi_3;
+    }
+
+    public Element getCredAggRandom() {
+        return credAggRandom;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public Element[][] getIvk() {
+        return ivk;
+    }
+
+    public String[][] getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String[][] attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setIvk(Element[][] ivk) {
+        this.ivk = ivk;
+    }
+
+    public VerifyInfo(){
+
+    }
+    public VerifyInfo(Element phi_1,
+                      Element phi_2,
+                      Element phi_3,
+                      Element credAggRandom,
+                      Element c,
+                      Element S_n,
+                      Element S_alpha,
+                      Element S_u,
+                      Element S_o,
+                      Element S_beta,
+                      Element S_gamma,
+                      String[][] attributes,
+                      Element[][] ivk,
+                      String msg) {
+        this.phi_1=phi_1;
+        this.phi_2=phi_2;
+        this.phi_3=phi_3;
+        this.credAggRandom=credAggRandom;
+        this.c=c;
+        this.S_n=S_n;
+        this.S_alpha=S_alpha;
+        this.S_u=S_u;
+        this.S_o=S_o;
+        this.S_beta=S_beta;
+        this.S_gamma=S_gamma;
+        this.attributes=attributes;
+        this.ivk=ivk;
+        this.msg=msg;
     }
 }

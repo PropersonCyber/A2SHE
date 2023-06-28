@@ -12,4 +12,28 @@ public class AggregationCredential {
     private Element aggCredential;
     private String[][] attributes;
     private Element[][] ivkList;
+
+    public void setAttributes(String[][] attributes) {
+        this.attributes = attributes;
+    }
+
+    public String[][] getAttributes() {
+        return attributes;
+    }
+
+    public void setIvkList(Element[][] ivkList) {
+        this.ivkList = ivkList;
+    }
+
+    public Element getAggCredential() {
+        return aggCredential;
+    }
+
+    public void setAggCredential(Element aggCredential) {
+        this.aggCredential = aggCredential;
+    }
+
+    public Element[][] getIvkList() {
+        return ivkList;
+    }
 }

@@ -3,7 +3,6 @@ package com.experiment.anonyauth.Param;
 import com.experiment.anonyauth.AnonyAuthApplication;
 import com.experiment.anonyauth.Tool.ElementOperation;
 import it.unisa.dia.gas.jpbc.Element;
-import lombok.Data;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,26 +10,23 @@ import java.util.Properties;
 
 /**
  * @author PerpersonCyber
- * @date2023/6/26 0026 16:18
+ * @date2023/6/27 0027 9:27
  */
-@Data
-public class RAParam {
-    private static final String fileName="RA.properties";
-    private static final int size=4;
+public class Issuer1Param {
+    private static final int attrSize=2;
+    private static final int size=attrSize+2;
+    private static final String fileName="issuer1.properties";
 
-    public static Element[] rvk;
-    public static Element tpk;
-
-    public static Element[] rsk;
-    public static Element tsk;
+    public static Element[] isk;
+    public static Element[] ivk;
+    public static String[] attribute={"发行方1属性1","发行方1属性2"};
 
     static {
+        isk=new Element[size];
+        ivk=new Element[size];
 
         Properties properties = new Properties();
         InputStream input = null;
-
-        rvk=new Element[size];
-        rsk=new Element[size];
 
         try {
             // 加载properties文件
@@ -39,22 +35,15 @@ public class RAParam {
 
             //rsk读取属性值
             for(int i=0;i<size;i++){
-                String rskStr = properties.getProperty("rsk_" + i);
-                rsk[i]= ElementOperation.getElementFromString(rskStr).getImmutable();
+                String iskStr = properties.getProperty("isk_" + i);
+                isk[i]= ElementOperation.getElementFromString(iskStr).getImmutable();
             }
 
             //rvk读取属性值
             for(int i=0;i<size;i++){
-                String rvkStr = properties.getProperty("rvk_" + i);
-                rvk[i]=ElementOperation.getElementFromString(rvkStr).getImmutable();
+                String ivkStr = properties.getProperty("ivk_" + i);
+                ivk[i]=ElementOperation.getElementFromString(ivkStr).getImmutable();
             }
-
-            //rtsk获取属性值
-            String tskStr=properties.getProperty("tsk");
-            tsk=ElementOperation.getElementFromString(tskStr).getImmutable();
-
-            String tpkStr = properties.getProperty("tpk");
-            tpk=ElementOperation.getElementFromString(tpkStr).getImmutable();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,5 +56,6 @@ public class RAParam {
                 }
             }
         }
+
     }
 }

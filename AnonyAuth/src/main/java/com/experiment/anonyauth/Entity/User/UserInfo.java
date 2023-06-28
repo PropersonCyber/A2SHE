@@ -17,17 +17,51 @@ public class UserInfo {
     private Element fr;
     private Element tToken;
 
-    public static UserInfo fromVo(UserInfoVo userInfoVo){
-        UserInfo userInfo = new UserInfo();
-        ElementStringConverter.stringToElement(userInfoVo,userInfo);
-        userInfo.setId(userInfo.getId());
-        return userInfo;
+    public Long getId() {
+        return id;
     }
 
-    public static UserInfoVo toVo(UserInfo userInfo){
-        UserInfoVo userInfoVo = new UserInfoVo();
-        ElementStringConverter.elementToString(userInfo,userInfoVo);
-        userInfoVo.setId(userInfo.getId());
-        return userInfoVo;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Element getrToken() {
+        return rToken;
+    }
+
+    public void setrToken(Element rToken) {
+        this.rToken = rToken;
+    }
+
+    public Element getRv() {
+        return rv;
+    }
+
+    public void setRv(Element rv) {
+        this.rv = rv;
+    }
+
+    public Element getFr() {
+        return fr;
+    }
+
+    public void setFr(Element fr) {
+        this.fr = fr;
+    }
+
+    public Element getNodeValue() {
+        return nodeValue;
+    }
+
+    public void setNodeValue(Element nodeValue) {
+        this.nodeValue = nodeValue;
+    }
+
+    public Element gettToken() {
+        return tToken;
+    }
+
+    public void settToken(Element tToken) {
+        this.tToken = tToken;
     }
 }

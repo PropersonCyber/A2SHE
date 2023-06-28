@@ -16,7 +16,7 @@ public class UserParam {
     public static Element rToken;
     //节点对应的特殊值,系统分配
     public static Element nodeValue;
-    public static Element Rv;
+    //public static Element Rv;
 
 
     //追踪token,随机参数
