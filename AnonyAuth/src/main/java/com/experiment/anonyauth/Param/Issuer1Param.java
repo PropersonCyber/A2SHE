@@ -13,13 +13,13 @@ import java.util.Properties;
  * @date2023/6/27 0027 9:27
  */
 public class Issuer1Param {
-    private static final int attrSize=2;
+    private static final int attrSize=5;
     private static final int size=attrSize+2;
     private static final String fileName="issuer1.properties";
 
     public static Element[] isk;
     public static Element[] ivk;
-    public static String[] attribute={"发行方1属性1","发行方1属性2"};
+    public static String[] attribute={"发行方1属性1","发行方1属性2","发行方1属性3","发行方1属性4","发行方1属性5"};
 
     static {
         isk=new Element[size];

@@ -56,7 +56,7 @@ class AnonyAuthApplicationTests {
         UserProof userProof = UserOperation.createUserProof(ivkList);
         Boolean userHaveSecretKey = CommonOperation.isUserHaveSecretKey(ivkList[0], userProof);
 
-        Credential credential1 = IssuerOperation.getCredential(UserParam.uvk, 2, ivkList,iskList, attrs);
+        Credential credential1 = IssuerOperation.getCredential(UserParam.uvk, 5, ivkList,iskList, attrs);
         Boolean aBoolean1 = UserOperation.SingleCredVerify(credential1, ivkList);
 
 
@@ -76,8 +76,11 @@ class AnonyAuthApplicationTests {
         if(traceToken1.isEqual(UserParam.tToken))
             System.out.println("trace Ok");
 
-        Boolean verify = VerifierOperation.Verify(verifyInfo);
-        System.out.println(verify);
+        for (int i=0;i<10;i++){
+            Boolean verify = VerifierOperation.Verify(verifyInfo);
+            System.out.println(verify);
+        }
+
 
 
     }

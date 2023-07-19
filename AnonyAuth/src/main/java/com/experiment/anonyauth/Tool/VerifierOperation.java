@@ -78,7 +78,34 @@ public class VerifierOperation {
         Element S_beta = verifyInfo.getS_beta().getImmutable();
         Element S_gamma = verifyInfo.getS_gamma().getImmutable();
 
+
+
         String[][] attr = verifyInfo.getAttributes();
+
+
+        //预计算值
+        //e(g_2,g2 )
+        Element E_g_2_g2 = PublicParam.pairing.pairing(g_2, g2).getImmutable();
+        //e(tpk,vk_3)
+        Element E_tpk_vk3 = PublicParam.pairing.pairing(tpk, rvk[2]).getImmutable();
+        //e(g1,g2)
+        Element E_g1_g2=PublicParam.pairing.pairing(g1, g2).getImmutable();
+        //e(tpk,g2)
+        Element E_tpk_g2=PublicParam.pairing.pairing(tpk, g2).getImmutable();
+        //e(g_1,g2)
+        Element E_g_1_g2=PublicParam.pairing.pairing(g_1, g2).getImmutable();
+        //H(vk1,vk2,vk3,t)拼接的字符串
+        //将hash值映射到G1群上
+        Element H_vk_t=ElementOperation.HashToG1(rvk[0],epoch_t);
+        //e(H(vk,t),vk2)
+        Element E_H_vk2=PublicParam.pairing.pairing(H_vk_t,rvk[1]).getImmutable();
+        //e(H(vk,t),g2)
+        Element E_H_g2=PublicParam.pairing.pairing(H_vk_t, g2).getImmutable();
+        //e(H(vk,t),vk1)*e(H(vk,t),vk3)^t
+        Element E_H_vk13=PublicParam.pairing.pairing(H_vk_t,rvk[0].duplicate().mul(rvk[2].duplicate().powZn(epoch_t))).getImmutable();
+
+
+        long beginTime=System.currentTimeMillis();
 
         //计算D_1
         Element[][] attribute = new Element[attr.length][];
@@ -109,31 +136,6 @@ public class VerifierOperation {
             Element r3 = r2.duplicate().mul(ivk[i][ivk[i].length - 1]);
             rigg = rigg.duplicate().mul(r3).getImmutable();//将j个凭证值连乘
         }
-
-
-        //预计算值
-        //e(g_2,g2 )
-        Element E_g_2_g2 = PublicParam.pairing.pairing(g_2, g2).getImmutable();
-        //e(tpk,vk_3)
-        Element E_tpk_vk3 = PublicParam.pairing.pairing(tpk, rvk[2]).getImmutable();
-        //e(g1,g2)
-        Element E_g1_g2=PublicParam.pairing.pairing(g1, g2).getImmutable();
-        //e(tpk,g2)
-        Element E_tpk_g2=PublicParam.pairing.pairing(tpk, g2).getImmutable();
-        //e(g_1,g2)
-        Element E_g_1_g2=PublicParam.pairing.pairing(g_1, g2).getImmutable();
-        //H(vk1,vk2,vk3,t)拼接的字符串
-        //将hash值映射到G1群上
-        Element H_vk_t=ElementOperation.HashToG1(rvk[0],epoch_t);
-        //e(H(vk,t),vk2)
-        Element E_H_vk2=PublicParam.pairing.pairing(H_vk_t,rvk[1]).getImmutable();
-        //e(H(vk,t),g2)
-        Element E_H_g2=PublicParam.pairing.pairing(H_vk_t, g2).getImmutable();
-        //e(H(vk,t),vk1)*e(H(vk,t),vk3)^t
-        Element E_H_vk13=PublicParam.pairing.pairing(H_vk_t,rvk[0].duplicate().mul(rvk[2].duplicate().powZn(epoch_t))).getImmutable();
-
-
-
 
         //计算D_1
         Element D1_r1 = PublicParam.pairing.pairing(phi_3.duplicate().powZn(S_u), rigg).getImmutable();
@@ -168,6 +170,12 @@ public class VerifierOperation {
 
         //Element cc = ElementOperation.Hash(phi_1,D_1);
         Element cc = ElementOperation.Hash(phi_1, phi_2, phi_3, credAgg, D_1, D_2, D_3, D_4, mes);
+
+        long endTime=System.currentTimeMillis();
+
+
+        System.out.println("Excute Time :"+(endTime-beginTime) );
+
         return cc.isEqual(c);
     }
 }
