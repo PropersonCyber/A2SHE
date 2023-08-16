@@ -4,8 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"time"
-
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"golang.org/x/crypto/ed25519"
 )
@@ -44,13 +42,16 @@ func (cc *EdDSAChaincode) Init(ctx contractapi.TransactionContextInterface) erro
 }
 
 //Sign
-func (cc *EdDSAChaincode) Sign(ctx contractapi.TransactionContextInterface, input SignInput )(*SignResponse,error ){
+func (cc *EdDSAChaincode) Sign(ctx contractapi.TransactionContextInterface, input string )(*SignResponse,error ){
+	signinput:=SignInput{
+		Message: input,
+	}
     _, privateKey, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate sk: %w", err)
 	}
 
-	signature := ed25519.Sign(privateKey, []byte(input.Message))
+	signature := ed25519.Sign(privateKey, []byte(signinput.Message))
 
 	response := &SignResponse{
 		Signature: base64.StdEncoding.EncodeToString(signature),
@@ -59,20 +60,23 @@ func (cc *EdDSAChaincode) Sign(ctx contractapi.TransactionContextInterface, inpu
 	return response, nil
 }
 
-// Verify 验证方法
-func (cc *EdDSAChaincode) Verify(ctx contractapi.TransactionContextInterface, input VerifyInput) (*VerifyResponse, error) {
-	publicKey, err := base64.StdEncoding.DecodeString(input.PublicKey)
-	if err != nil {
-		return nil, fmt.Errorf("failed to decode pk: %w", err)
+
+func (cc *EdDSAChaincode) VerifyPass(ctx contractapi.TransactionContextInterface,input string) (*VerifyResponse, error){
+	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
+
+	signinput:=SignInput{
+		Message: input,
 	}
 
-	signature, err := base64.StdEncoding.DecodeString(input.Signature)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode signature: %w", err)
+		return nil, fmt.Errorf("failed to generate key pair: %w", err)
 	}
 
-	result := ed25519.Verify(publicKey, []byte(input.Message), signature)
-
+	signature := ed25519.Sign(privateKey, []byte(signinput.Message))
+	result := false
+	for i := 1; i <= 10; i++ {
+		result = ed25519.Verify(publicKey, []byte(signinput.Message), signature)
+	}
 	response := &VerifyResponse{
 		Result: result,
 	}
@@ -81,6 +85,32 @@ func (cc *EdDSAChaincode) Verify(ctx contractapi.TransactionContextInterface, in
 }
 
 
+// Verify 验证方法
+func (cc *EdDSAChaincode) Verify(ctx contractapi.TransactionContextInterface, inputPk string,inputMsg string,inputSign string) (*VerifyResponse, error) {
+	verifyInput:=VerifyInput{
+		PublicKey: inputPk,
+		Message:inputMsg,
+		Signature:inputSign,
+	}
+	
+	publicKey, err := base64.StdEncoding.DecodeString(verifyInput.PublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode pk: %w", err)
+	}
+
+	signature, err := base64.StdEncoding.DecodeString(verifyInput.Signature)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode signature: %w", err)
+	}
+
+	result := ed25519.Verify(publicKey, []byte(verifyInput.Message), signature)
+
+	response := &VerifyResponse{
+		Result: result,
+	}
+
+	return response, nil
+}
 
 func main() {
    chaincode, err := contractapi.NewChaincode(&EdDSAChaincode{})
