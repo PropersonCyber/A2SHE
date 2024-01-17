@@ -1,2 +1,2 @@
-# ApCode
-Anonymous authentication protocol in the scenario of epidemic prevention code in public places
+# AA-PHE 
+Innovative Privacy-Preserving in Public Venues: AA-PHE, an Anonymous Authentication Scheme for Public Health Emergencies
